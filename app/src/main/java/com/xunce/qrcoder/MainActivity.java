@@ -137,13 +137,11 @@ public class MainActivity extends AppCompatActivity implements QRCodeView.Delega
             BufferedReader bufferedReader = new BufferedReader(inputReader);
             String lineTxt="";
             while ((lineTxt = bufferedReader.readLine()) != null) {//按行读取
-                // System.out.println(“lineTxt=” + lineTxt);
                 if (!"".equals(lineTxt)) {
                     String [] strArray = lineTxt.split("\\t");//对行的内容进行分析处理后再放入map里。
                     if(strArray.length == 2) {
                         IMEIMap.put(strArray[0], strArray[1]);
                     }
-
                 }
             }
             inputReader.close();//关闭InputStreamReader
@@ -153,33 +151,48 @@ public class MainActivity extends AppCompatActivity implements QRCodeView.Delega
         }
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (resultCode == Activity.RESULT_OK&&requestCode==0){
-//            Uri uri = data.getData();//得到uri，后面就是将uri转化成file的过程。
-//            String string =uri.getPath().toString();
-//            File file = new File(string);
-//
-//                IMEIMap.clear();
-//                try {
-//                    InputStreamReader read = new InputStreamReader(new FileInputStream(file), "UTF-8");// 考虑到编码格式
-//                    BufferedReader bufferedReader = new BufferedReader(read);
-//                    String lineTxt = null;
-//                    while ((lineTxt = bufferedReader.readLine()) != null) {//按行读取
-//                        // System.out.println(“lineTxt=” + lineTxt);
-//                        if (!"".equals(lineTxt)) {
-//                            String [] strArray = lineTxt.split(" ");//对行的内容进行分析处理后再放入map里。
-//                            IMEIMap.put(strArray[0],strArray[1]);
-//                        }
-//                    }
-//                    read.close();//关闭InputStreamReader
-//                    bufferedReader.close();//关闭BufferedReader
-//                }catch (Exception e){
-//                    e.printStackTrace();
-//                }
-//
-//        }
-//    }
+   @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+       if (resultCode == Activity.RESULT_OK&&requestCode==0){
+           Uri uri = data.getData();//得到uri，后面就是将uri转化成file的过程。
+           String string =uri.getPath().toString();
+           File file = new File(string);
+           IMEIMap.clear();
+           if (file.exists()){
+               try {
+                   /*InputStreamReader read = new InputStreamReader(new FileInputStream(file), "UTF-8");// 考虑到编码格式
+                   BufferedReader bufferedReader = new BufferedReader(read);
+                   String lineTxt = "";
+                   while ((lineTxt = bufferedReader.readLine()) != null) {//按行读取
+                       if (!"".equals(lineTxt)) {
+                           String [] strArray = lineTxt.split("\\t");//对行的内容进行分析处理后再放入map里。
+                           IMEIMap.put(strArray[0],strArray[1]);
+                           Toast.makeText(MainActivity.this, strArray[1], Toast.LENGTH_SHORT).show();
+                       }
+                   }
+                   read.close();//关闭InputStreamReader
+                   bufferedReader.close();//关闭BufferedReader*/
+                   FileInputStream fin = new FileInputStream(file);
+                   BufferedReader buffer = new BufferedReader(new InputStreamReader(fin));
+                   String lineTxt = "";
+                   while ((lineTxt = buffer.readLine()) != null){
+                       if (!"".equals(lineTxt)){
+                           String [] strArray = lineTxt.split("\\t");
+                           if (strArray.length == 2){
+                               IMEIMap.put(strArray[0], strArray[1]);
+                           }
+                       }
+                   }
+                   buffer.close();
+                   fin.close();
+                   Toast.makeText(MainActivity.this, "读取成功", Toast.LENGTH_SHORT).show();
+               }catch (Exception e){
+                   e.printStackTrace();
+               }
+           }
+
+       }
+    }
 
     private void createDir(){
         File filePath = this.getFilesDir();
