@@ -43,6 +43,9 @@ import com.xunce.qrcoder.tool.zxing.android.IntentSource;
 import com.xunce.qrcoder.tool.zxing.camera.CameraManager;
 import com.xunce.qrcoder.tool.zxing.view.ViewfinderView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -122,6 +125,62 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        // CameraManager必须在这里初始化，而不是在onCreate()中。
+        // 这是必须的，因为当我们第一次进入时需要显示帮助页，我们并不想打开Camera,测量屏幕大小
+        // 当扫描框的尺寸不正确时会出现bug
+        cameraManager = new CameraManager(getApplication());
+
+        viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
+        viewfinderView.setCameraManager(cameraManager);
+
+        handler = null;
+
+        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.preview_view);
+        SurfaceHolder surfaceHolder = surfaceView.getHolder();
+        if (hasSurface) {
+            // activity在paused时但不会stopped,因此surface仍旧存在；
+            // surfaceCreated()不会调用，因此在这里初始化camera
+            initCamera(surfaceHolder);
+        } else {
+            // 重置callback，等待surfaceCreated()来初始化camera
+            surfaceHolder.addCallback(this);
+        }
+
+        beepManager.updatePrefs();
+        inactivityTimer.onResume();
+
+        source = IntentSource.NONE;
+        decodeFormats = null;
+        characterSet = null;
+    }
+
+    @Override
+    protected void onPause() {
+        if (handler != null) {
+            handler.quitSynchronously();
+            handler = null;
+        }
+        inactivityTimer.onPause();
+        beepManager.close();
+        cameraManager.closeDriver();
+        if (!hasSurface) {
+            SurfaceView surfaceView = (SurfaceView) findViewById(R.id.preview_view);
+            SurfaceHolder surfaceHolder = surfaceView.getHolder();
+            surfaceHolder.removeCallback(this);
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        inactivityTimer.shutdown();
+        super.onDestroy();
+    }
+
+    @Override
     public void surfaceCreated(SurfaceHolder holder) {
         if (!hasSurface) {
             hasSurface = true;
@@ -154,8 +213,19 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         //这里处理解码完成后的结果，此处将参数回传到Activity处理
         if (fromLiveScan) {
             beepManager.playBeepSoundAndVibrate();
-            Toast.makeText(this, "扫描成功", Toast.LENGTH_SHORT).show();
-            dealresult(rawResult.getText());
+            //Toast.makeText(this, rawResult.getText(), Toast.LENGTH_SHORT).show();
+            String IMEI = null;
+            try{
+                JSONObject jsonObject = new JSONObject(rawResult.getText());
+                if (jsonObject.has("IMEI")){
+                    IMEI = jsonObject.getString("IMEI");
+                }
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+            if (null!=IMEI){
+                dealresult(IMEI);
+            }
         }
 
     }
