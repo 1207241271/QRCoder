@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements QRCodeView.Delega
 
         mQRCodeView = (ZXingView) findViewById(R.id.zxingview);
         checkPermission();
-        getData();
+        //getData();
         mQRCodeView.startCamera();
         mQRCodeView.startSpot();
         mQRCodeView.setResultHandler(this);
@@ -160,18 +161,6 @@ public class MainActivity extends AppCompatActivity implements QRCodeView.Delega
            IMEIMap.clear();
            if (file.exists()){
                try {
-                   /*InputStreamReader read = new InputStreamReader(new FileInputStream(file), "UTF-8");// 考虑到编码格式
-                   BufferedReader bufferedReader = new BufferedReader(read);
-                   String lineTxt = "";
-                   while ((lineTxt = bufferedReader.readLine()) != null) {//按行读取
-                       if (!"".equals(lineTxt)) {
-                           String [] strArray = lineTxt.split("\\t");//对行的内容进行分析处理后再放入map里。
-                           IMEIMap.put(strArray[0],strArray[1]);
-                           Toast.makeText(MainActivity.this, strArray[1], Toast.LENGTH_SHORT).show();
-                       }
-                   }
-                   read.close();//关闭InputStreamReader
-                   bufferedReader.close();//关闭BufferedReader*/
                    FileInputStream fin = new FileInputStream(file);
                    BufferedReader buffer = new BufferedReader(new InputStreamReader(fin));
                    String lineTxt = "";
@@ -190,9 +179,17 @@ public class MainActivity extends AppCompatActivity implements QRCodeView.Delega
                    e.printStackTrace();
                }
            }
-
        }
     }
+
+    /*private void searchSN(String IMEI){
+        for (Map.Entry<String, String> entry:IMEIMap.entrySet()){
+            if (entry.getKey().toString().equals(IMEI)){
+                Toast.makeText(MainActivity.this, entry.getValue().toString(), Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+    }*/
 
     private void createDir(){
         File filePath = this.getFilesDir();
