@@ -236,21 +236,6 @@ public final class ViewfinderView extends View {
      */
     private void drawStatusText(Canvas canvas, Rect frame, int width) {
 
-        String statusText1 = "将二维码/条码放入取景框内";
-        String statusText2 = "即可自动扫描";
-        int statusTextSize = 45;
-        int statusPaddingTop = 180;
-
-        paint.setColor(statusColor);
-        paint.setTextSize(statusTextSize);
-
-        int textWidth1 = (int) paint.measureText(statusText1);
-        canvas.drawText(statusText1, (width - textWidth1) / 2, frame.top
-                - statusPaddingTop, paint);
-
-        int textWidth2 = (int) paint.measureText(statusText2);
-        canvas.drawText(statusText2, (width - textWidth2) / 2, frame.top
-                - statusPaddingTop + 60, paint);
     }
 
     /**
