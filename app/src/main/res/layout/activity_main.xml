@@ -9,32 +9,24 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <cn.bingoogolapple.qrcode.zxing.ZXingView
-        android:id="@+id/zxingview"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:qrcv_animTime="1000"
-        app:qrcv_borderColor="@android:color/white"
-        app:qrcv_borderSize="1dp"
-        app:qrcv_cornerColor="@color/colorAccent"
-        app:qrcv_cornerLength="20dp"
-        app:qrcv_cornerSize="3dp"
-        app:qrcv_maskColor="#33FFFFFF"
-        app:qrcv_rectWidth="220dp"
-        app:qrcv_scanLineColor="@color/colorAccent"
-        app:qrcv_scanLineSize="1dp"
-        app:qrcv_topOffset="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="80dp"/>
+    <android.support.v7.widget.ContentFrameLayout
+        android:layout_width="400dp"
+        android:layout_height="480dp">
+        <SurfaceView
+            android:id="@+id/preview_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <com.xunce.qrcoder.tool.zxing.view.ViewfinderView
+            android:id="@+id/viewfinder_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v7.widget.ContentFrameLayout>
 
     <Button
         android:layout_width="wrap_content"
@@ -45,7 +37,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintHorizontal_bias="0.145"
+        app:layout_constraintHorizontal_bias="0.155"
         app:layout_constraintVertical_bias="0.965" />
     <TextView
         android:layout_width="wrap_content"
