@@ -219,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 JSONObject jsonObject = new JSONObject(rawResult.getText());
                 if (jsonObject.has("IMEI")){
                     IMEI = jsonObject.getString("IMEI");
+                    Log.e("IMEI", IMEI);
                 }
             }catch (JSONException e){
                 e.printStackTrace();
@@ -277,6 +278,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 endinit();
                 vibrate();
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("SN号");
                 builder.setMessage(IMEIMap.get(IMEI));
                 builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
@@ -407,6 +409,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                    FileInputStream fin = new FileInputStream(file);
                    BufferedReader buffer = new BufferedReader(new InputStreamReader(fin));
                    String lineTxt = "";
+                   Log.e("File", "read");
                    while ((lineTxt = buffer.readLine()) != null){
                        if (!"".equals(lineTxt)){
                            String [] strArray = lineTxt.split("\\t");
